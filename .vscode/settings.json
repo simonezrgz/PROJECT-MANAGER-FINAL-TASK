@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./app/api"
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system"
+}
