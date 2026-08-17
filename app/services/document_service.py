@@ -12,23 +12,6 @@ ALLOWED_EXTENSIONS = [".pdf", ".docx"]
 UPLOAD_DIR = settings.UPLOAD_DIR
 
 
-def save_upload_file(file: UploadFile) -> str:
-    """Helper to handle UploadFile saving & validation for FastAPI endpoints."""
-    ext = os.path.splitext(file.filename or "")[1].lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        raise ValueError(
-            f"Invalid file type. Allowed types: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
-        )
-
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    unique_filename = f"{uuid.uuid4()}{ext}"
-    file_path = os.path.join(UPLOAD_DIR, unique_filename)
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    return file_path
-
 #-----------Create Document----------------#
 def create_document(db: Session, project_id: int, file_path: str) -> models.Documents:
     project = project_service.get_project_by_id(db, project_id)

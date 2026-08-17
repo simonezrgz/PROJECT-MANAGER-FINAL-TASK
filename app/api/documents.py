@@ -20,8 +20,8 @@ def create_document(
     access = Depends(check_project_access),
     db: Session = Depends(get_db)
 ):
-    file_path = document_service.save_upload_file(file)
     try:
+        file_path = storage_service.save_upload_file(file)
         return document_service.create_document(
             db=db,
             project_id=project_id,
@@ -38,7 +38,7 @@ def update_document(
     access = Depends(check_document_owner),
     db: Session = Depends(get_db)
 ):
-    new_file_path = document_service.save_upload_file(new_file)
+    new_file_path = storage_service.save_upload_file(new_file)
     try:
         return document_service.update_document(
             db=db,
@@ -66,7 +66,7 @@ def download_document(
     access = Depends(check_document_access),
 ):
     url = storage_service.get_download_url(access.document.file_path)
-    print(f"DEBUG: presigned URL = {url}")   
+    return {"download url": url}   
 
 
 #-----------Delete Document----------------#
