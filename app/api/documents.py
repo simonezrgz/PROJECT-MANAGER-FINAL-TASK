@@ -1,4 +1,3 @@
-import os
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session

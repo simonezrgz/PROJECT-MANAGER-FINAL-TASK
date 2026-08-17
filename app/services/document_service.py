@@ -6,7 +6,9 @@ from sqlalchemy.orm import Session
 
 from app import models
 from app.config import settings
-from app.services import project_service, storage_service
+from app.services import project_service
+from app.services import storage_service as default_storage_service
+
 
 ALLOWED_EXTENSIONS = [".pdf", ".docx"]
 UPLOAD_DIR = settings.UPLOAD_DIR
@@ -60,7 +62,7 @@ def list_documents(db: Session, project_id: int) -> list[models.Documents]:
 
 
 #-----------Delete Document----------------#
-def delete_document(db: Session, document: models.Documents) -> None:
-    storage_service.delete_file(document.file_path)
+def delete_document(db: Session, document: models.Documents, storage=default_storage_service) -> None:
+    storage.delete_file(document.file_path)
     db.delete(document)
     db.commit()

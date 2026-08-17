@@ -1,4 +1,4 @@
-from app.services import document_service
+from app.services import document_service, storage_service
 import app.models as models
 import os
 
@@ -85,6 +85,8 @@ def test_delete_document(db_session, test_project):
     #Delete the document
     document_service.delete_document(db=db_session, document=new_document)
 
+
+    
     #Check that the document is deleted from the database
     deleted_document = db_session.query(models.Documents).filter(models.Documents.id == new_document.id).first()
     assert deleted_document is None

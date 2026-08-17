@@ -86,3 +86,16 @@ def test_user_data():
         "password": "testpassword",
         "repeat_password": "testpassword"
     }
+
+
+
+class FakeStorageService:
+    def __init__(self):
+        self.deleted_files = []
+
+    def delete_file(self, file_path: str):
+        self.deleted_files.append(file_path)
+
+@pytest.fixture
+def fake_storage():
+    return FakeStorageService()

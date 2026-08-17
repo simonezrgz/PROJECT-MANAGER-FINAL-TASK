@@ -37,3 +37,7 @@ def get_download_url(key: str, expires_in: int = 300) -> str:
         Params={"Bucket": BUCKET_NAME, "Key": key},
         ExpiresIn=expires_in
     )
+
+
+def delete_file(key: str) -> None:
+    s3_client.delete_object(Bucket=BUCKET_NAME, Key=key)
