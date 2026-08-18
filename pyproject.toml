@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "project-manager-task"
+version = "0.1.0"
+description = "A project management API with document sharing, built with FastAPI"
+authors = ["Nina Zaragoza <nina_zaragoza@epam.com>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<4.0"
+fastapi = "^0.141.1"
+uvicorn = "^0.52.3"
+pyjwt = "^2.13.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+sqlalchemy = "^2.0.52"
+psycopg2-binary = "^2.9.12"
+pydantic = {extras = ["email"], version = "^2.13.4"}
+pydantic-settings = "^2.15.0"
+python-dotenv = "^1.2.3"
+python-multipart = "^0.0.32"
+boto3 = "^1.43.73"
+bcrypt = "<4.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.1.1"
+httpx = "^0.28.1"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
