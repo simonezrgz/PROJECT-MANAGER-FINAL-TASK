@@ -21,4 +21,8 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore")
 
+    #Lambda
+    LAMBDA_FUNCTION_NAME: str = "LambdaProjectManager"
+    MAX_PROJECT_SIZE_BYTES: int = 104857600
+
 settings = Settings()

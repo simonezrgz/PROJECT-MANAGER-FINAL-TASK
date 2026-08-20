@@ -38,6 +38,11 @@ def get_download_url(key: str, expires_in: int = 300) -> str:
         ExpiresIn=expires_in
     )
 
+def get_upload_file_size(file: UploadFile) -> int:
+    file.file.seek(0,2)
+    size = file.file.tell()
+    file.file.seek(0)
+    return size
 
 def delete_file(key: str) -> None:
     s3_client.delete_object(Bucket=BUCKET_NAME, Key=key)
