@@ -7,7 +7,9 @@ from sqlalchemy.orm import Session
 from app import models
 from app.config import settings
 from app.services import project_service
-from app.services import storage_service as default_storage_service
+from app.services import storage_service 
+from app.config import settings
+
 
 
 ALLOWED_EXTENSIONS = [".pdf", ".docx"]
@@ -62,7 +64,23 @@ def list_documents(db: Session, project_id: int) -> list[models.Documents]:
 
 
 #-----------Delete Document----------------#
-def delete_document(db: Session, document: models.Documents, storage=default_storage_service) -> None:
+def delete_document(db: Session, document: models.Documents, storage=storage_service) -> None:
     storage.delete_file(document.file_path)
     db.delete(document)
     db.commit()
+
+
+#-----------Get file size limit----------------#
+def validate_project_size_limit(db: Session, project_id: int, incoming_file_size:int) -> None:
+    existing_documents = list_documents(db, project_id)
+    existing_keys = [doc.file_path for doc in existing_documents]  #list for the keys
+
+    current_total = storage_service.get_total_project_size(existing_keys)
+
+    #Calculation to approve incoming document size
+    if current_total + incoming_file_size > settings.MAX_PROJECT_SIZE_BYTES:
+        raise ValueError(
+            f"Upload would exceed the project's size limit of {settings.MAX_PROJECT_SIZE_BYTES}"
+        )
+
+    

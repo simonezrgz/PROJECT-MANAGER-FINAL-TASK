@@ -1,6 +1,7 @@
 import boto3
 import os
 import uuid 
+import json
 
 from fastapi import UploadFile  
 from app.config import settings
@@ -8,6 +9,24 @@ from app.config import settings
 
 
 ALLOWED_EXTENSIONS = [".pdf", ".docx"]
+BUCKET_NAME = settings.S3_BUCKET_NAME
+
+
+lambda_client = boto3.client(
+    "lambda",
+    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+    region_name=settings.AWS_REGION,
+)
+
+def get_total_project_size(keys: list[str]) -> int:
+    response = lambda_client.invoke(
+        FunctionName=settings.LAMBDA_FUNCTION_NAME,
+        InvocationType="RequestResponse",
+        Payload=json.dumps({"keys": keys}),
+    )
+    result = json.loads(response["Payload"].read())
+    return result["total_size_bytes"]
 
 
 s3_client = boto3.client(
@@ -16,8 +35,6 @@ s3_client = boto3.client(
     aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
     region_name=settings.AWS_REGION
 )
-
-BUCKET_NAME = settings.S3_BUCKET_NAME
 
 def save_upload_file(file: UploadFile) -> str:
     ext = os.path.splitext(file.filename or "")[1].lower()

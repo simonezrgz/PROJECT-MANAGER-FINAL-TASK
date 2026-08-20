@@ -20,15 +20,14 @@ def create_document(
     db: Session = Depends(get_db)
 ):
     try:
+        incoming_size = storage_service.get_upload_file_size(file)
+        document_service.validate_project_size_limit(db, project_id, incoming_size)
+
         file_path = storage_service.save_upload_file(file)
-        return document_service.create_document(
-            db=db,
-            project_id=project_id,
-            file_path=file_path
-        )
+        return document_service.create_document(db=db, project_id=project_id, file_path=file_path)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-
+    
 #-----------Update Document----------------#
 @router.put("/document/{document_id}", response_model=schemas.DocumentBase)
 def update_document(
@@ -77,3 +76,5 @@ def delete_document(
 ):
     document_service.delete_document(db=db, document=access.document)
     return None
+
+
