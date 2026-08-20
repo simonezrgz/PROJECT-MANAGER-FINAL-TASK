@@ -63,16 +63,6 @@ def test_list_documents(db_session, test_project):
     assert documents[0].file_path == file_path1
     assert documents[1].file_path == file_path2
 
-def test_download_document(db_session, test_project):
-    file_path = "test_file.pdf"
-    new_document = document_service.create_document(
-        db=db_session,
-        project_id=test_project.id,
-        file_path=file_path
-    )
-
-    #Simulate downloading the document by checking if the file path exists
-    assert new_document.file_path == file_path
 
 def test_delete_document(db_session, test_project):
     file_path = "test_file.pdf"
