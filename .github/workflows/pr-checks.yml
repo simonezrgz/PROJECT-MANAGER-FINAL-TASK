@@ -7,6 +7,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "postgresql://fake:fake@localhost:5432/fake_db"
+      SECRET_KEY: "fake-secret-key-for-ci-only"
+      AWS_ACCESS_KEY_ID: "fake-access-key"
+      AWS_SECRET_ACCESS_KEY: "fake-secret-key"
+      AWS_REGION: "us-east-1"
+      S3_BUCKET_NAME: "fake-bucket"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
