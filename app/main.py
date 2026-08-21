@@ -4,7 +4,6 @@ import app.models
 from app.api.auth import router as auth_router
 from app.api.documents import router as document_router
 from app.api.projects import router as project_router
-from app.database import Base, engine
 
 #######################################################
 
