@@ -8,8 +8,6 @@ from app.database import Base, engine
 
 #######################################################
 
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Project Management")
 
 app.include_router(auth_router)
@@ -19,3 +17,8 @@ app.include_router(document_router)
 @app.get("/")
 def read_root():
     return {"message": "API is up and running"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
