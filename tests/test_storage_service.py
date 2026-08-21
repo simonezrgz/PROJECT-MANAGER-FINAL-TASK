@@ -1,9 +1,10 @@
+import io
+import json
 from unittest.mock import MagicMock, patch
-from app.services import storage_service, document_service
 
 import pytest
-import io
-import json 
+
+from app.services import document_service, storage_service
 
 
 @patch.object(storage_service.s3_client, "upload_fileobj")

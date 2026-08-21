@@ -1,5 +1,6 @@
-from app.services import project_service
 import app.models as models
+from app.services import project_service
+
 
 def test_create_project_grants_owner_access(db_session, test_user):
     project_name = "Test Project"

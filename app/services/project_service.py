@@ -1,5 +1,7 @@
-from app import models
 from sqlalchemy.orm import Session
+
+from app import models
+
 
 #----------Create Project---------#
 def create_project(db: Session, name: str, description: str | None, owner_id: int) -> models.Projects:

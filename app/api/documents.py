@@ -1,11 +1,9 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
-
-from app.database import get_db
-from app.security import check_project_access, check_document_access, check_document_owner
 import app.schemas as schemas
+from app.database import get_db
+from app.security import check_document_access, check_document_owner, check_project_access
 from app.services import document_service, storage_service
 
 router = APIRouter(tags=["Documents"])

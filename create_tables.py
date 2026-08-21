@@ -1,5 +1,4 @@
-from app.database import engine, Base
-import app.models  # Registers models with Base
+from app.database import Base, engine
 
 if __name__ == "__main__":
     print("Creating database tables in PostgreSQL...")

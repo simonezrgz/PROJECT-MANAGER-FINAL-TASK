@@ -1,16 +1,10 @@
 import os
-import shutil
-import uuid
-from fastapi import UploadFile, status
+
 from sqlalchemy.orm import Session
 
 from app import models
 from app.config import settings
-from app.services import project_service
-from app.services import storage_service 
-from app.config import settings
-
-
+from app.services import project_service, storage_service
 
 ALLOWED_EXTENSIONS = [".pdf", ".docx"]
 UPLOAD_DIR = settings.UPLOAD_DIR

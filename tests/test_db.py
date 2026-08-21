@@ -1,7 +1,10 @@
 import sys
 from pathlib import Path
-from app.database import engine, get_db
+
 from sqlalchemy import text
+
+from app.database import engine, get_db
+
 #----------------------------------------------------------------------------#
 
 
@@ -15,12 +18,12 @@ def test_connection():
         with engine.connect() as connection:
             result = connection.execute(text("SELECT version();"))
             db_version = result.fetchone()
-            print(f"Engine connected successfully")
+            print("Engine connected successfully")
 
             db = next(get_db())
             try: 
                 res = db.execute(text("SELECT 1;"))
-                print(f"get_db) session working.)")
+                print("get_db) session working.)")
                 print("🎉🎉🎉🎉🎉🎉")
             finally:
                 db.close()
