@@ -1,9 +1,10 @@
+import io
+import json
 from unittest.mock import MagicMock, patch
-from app.services import storage_service, document_service
 
 import pytest
-import io
-import json 
+
+from app.services import document_service, storage_service
 
 
 @patch.object(storage_service.s3_client, "upload_fileobj")
@@ -59,17 +60,23 @@ def make_fake_lambda_response(total_size_bytes: int):
 
 
 @patch.object(storage_service, "lambda_client")
-def test_validate_project_size_limit_blocks_over_limit(mock_lambda_client, db_session, test_project, monkeypatch):
+def test_validate_project_size_limit_blocks_over_limit(
+    mock_lambda_client, db_session, test_project, monkeypatch
+):
     mock_lambda_client.invoke.return_value = make_fake_lambda_response(90)
     monkeypatch.setattr("app.services.document_service.settings.MAX_PROJECT_SIZE_BYTES", 100)
 
     with pytest.raises(ValueError) as exc_info:
-        document_service.validate_project_size_limit(db_session, test_project.id, incoming_file_size=20)
+        document_service.validate_project_size_limit(
+            db_session, test_project.id, incoming_file_size=20
+        )
 
     assert "exceed" in str(exc_info.value).lower()
 
 @patch.object(storage_service, "lambda_client")
-def test_validate_project_size_limit_allows_under_limit(mock_lambda_client, db_session, test_project, monkeypatch):
+def test_validate_project_size_limit_allows_under_limit(
+    mock_lambda_client, db_session, test_project, monkeypatch
+):
     mock_lambda_client.invoke.return_value = make_fake_lambda_response(30)
     monkeypatch.setattr("app.services.document_service.settings.MAX_PROJECT_SIZE_BYTES", 100)
 

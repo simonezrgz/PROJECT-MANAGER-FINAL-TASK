@@ -1,5 +1,6 @@
-from app.services import project_service
 import app.models as models
+from app.services import project_service
+
 
 def test_create_project_grants_owner_access(db_session, test_user):
     project_name = "Test Project"
@@ -43,6 +44,7 @@ def test_list_projects_returns_only_user_projects(db_session, test_user, test_us
     #Check that only the project for test_user is returned
     assert len(user_projects) == 1
     assert user_projects[0].id == project1.id
+    assert project2.id not in [p.id for p in user_projects]
 
 def test_get_project_by_id_returns_correct_project(db_session, test_user):
     #Create a project for the test user

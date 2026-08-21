@@ -1,5 +1,3 @@
-from app.models import Users
-from conftest import client, test_user_data
 
 
 def test_register_user(client, test_user_data):

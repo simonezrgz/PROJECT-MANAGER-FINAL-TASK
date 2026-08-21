@@ -1,6 +1,8 @@
-from app.services import document_service, storage_service
+from unittest.mock import MagicMock, patch
+
 import app.models as models
-import os
+from app.services import document_service, storage_service
+
 
 def test_create_document(db_session, test_project):
     file_path = "test_file.pdf"
@@ -64,7 +66,10 @@ def test_list_documents(db_session, test_project):
     assert documents[1].file_path == file_path2
 
 
-def test_delete_document(db_session, test_project):
+def test_delete_document(db_session, test_project, monkeypatch):
+    mock_delete = MagicMock()
+    monkeypatch.setattr(storage_service.s3_client, "delete_object", mock_delete)
+
     file_path = "test_file.pdf"
     new_document = document_service.create_document(
         db=db_session,
@@ -72,16 +77,21 @@ def test_delete_document(db_session, test_project):
         file_path=file_path
     )
 
-    #Delete the document
+
     document_service.delete_document(db=db_session, document=new_document)
 
-
-    
-    #Check that the document is deleted from the database
-    deleted_document = db_session.query(models.Documents).filter(models.Documents.id == new_document.id).first()
+    deleted_document = (
+        db_session.query(models.Documents)
+        .filter(models.Documents.id == new_document.id)
+        .first()
+    )
     assert deleted_document is None
 
-def test_delete_document_file_not_found(db_session, test_project):
+
+def test_delete_document_file_not_found(db_session, test_project, monkeypatch):
+    mock_delete = MagicMock()
+    monkeypatch.setattr(storage_service.s3_client, "delete_object", mock_delete)
+
     file_path = "test_file.pdf"
     new_document = document_service.create_document(
         db=db_session,
@@ -89,18 +99,20 @@ def test_delete_document_file_not_found(db_session, test_project):
         file_path=file_path
     )
 
-    if os.path.exists(new_document.file_path):
-        os.remove(new_document.file_path)
-
-    #Delete
     document_service.delete_document(db=db_session, document=new_document)
 
-    #Check that the document is deleted from the database
-    deleted_document = db_session.query(models.Documents).filter(models.Documents.id == new_document.id).first()
-    assert deleted_document is None
+    deleted_document = (
+        db_session.query(models.Documents)
+        .filter(models.Documents.id == new_document.id)
+        .first()
+    )
+    assert deleted_document is None 
 
 
-def test_update_document(db_session, test_project):
+def test_update_document(db_session, test_project, monkeypatch):
+    mock_delete = MagicMock()
+    monkeypatch.setattr(storage_service.s3_client, "delete_object", mock_delete)
+
     file_path = "test_file.pdf"
     new_document = document_service.create_document(
         db=db_session,
@@ -137,7 +149,9 @@ def test_update_document_invalid_extension(db_session, test_project):
     except Exception as e:
         assert str(e) == "Invalid file type. Allowed types: .docx, .pdf"
 
-def test_update_document_removes_old_document(db_session, test_project):
+
+@patch.object(storage_service.s3_client, "delete_object")
+def test_update_document_removes_old_document(mock_delete, db_session, test_project):
     file_path = "test_file.pdf"
     new_document = document_service.create_document(
         db=db_session,
@@ -146,10 +160,10 @@ def test_update_document_removes_old_document(db_session, test_project):
     )
 
     new_file_path = "updated_file.docx"
-    updated_document = document_service.update_document(
+    document_service.update_document(
         db=db_session,
         document=new_document,
         new_file_path=new_file_path
     )
 
-    assert not os.path.exists(file_path)
+    mock_delete.assert_called_once_with(Bucket=storage_service.BUCKET_NAME, Key=file_path)

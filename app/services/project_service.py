@@ -1,8 +1,15 @@
-from app import models
 from sqlalchemy.orm import Session
 
+from app import models
+
+
 #----------Create Project---------#
-def create_project(db: Session, name: str, description: str | None, owner_id: int) -> models.Projects:
+def create_project(
+        db: Session, 
+        name: str, 
+        description: str | None, 
+        owner_id: int
+    ) -> models.Projects:
     new_project = models.Projects(
         name=name,
         description=description,
@@ -37,7 +44,12 @@ def get_project_by_id(db: Session, project_id: int) -> models.Projects | None:
 
 
 #----------Update Project---------#
-def update_project(db: Session, project: models.Projects, name: str | None = None, description: str | None = None) -> models.Projects:
+def update_project(
+        db: Session, 
+        project: models.Projects, 
+        name: str | None = None, 
+        description: str | None = None
+    ) -> models.Projects:
     if name is not None:
         project.name = name
     if description is not None:
@@ -60,7 +72,7 @@ def shared_project_with_email(
         project_id: int, 
         user_id: int,
         requesting_user_id: int
-        ) -> models.ProjectAccess:
+    ) -> models.ProjectAccess:
     if user_id == requesting_user_id:
         raise ValueError("You cannot share the project with yourself.")
 

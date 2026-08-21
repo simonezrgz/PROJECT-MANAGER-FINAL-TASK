@@ -1,23 +1,21 @@
 import os
-import shutil
-import uuid
-from fastapi import UploadFile, status
+
 from sqlalchemy.orm import Session
 
 from app import models
 from app.config import settings
-from app.services import project_service
-from app.services import storage_service 
-from app.config import settings
-
-
+from app.services import project_service, storage_service
 
 ALLOWED_EXTENSIONS = [".pdf", ".docx"]
 UPLOAD_DIR = settings.UPLOAD_DIR
 
 
 #-----------Create Document----------------#
-def create_document(db: Session, project_id: int, file_path: str) -> models.Documents:
+def create_document(
+        db: Session, 
+        project_id: int, 
+        file_path: str
+    ) -> models.Documents:
     project = project_service.get_project_by_id(db, project_id)
     if not project:
         raise ValueError("Project not found")
@@ -40,7 +38,11 @@ def create_document(db: Session, project_id: int, file_path: str) -> models.Docu
 
 
 #-----------Update Document----------------#
-def update_document(db: Session, document: models.Documents, new_file_path: str) -> models.Documents:
+def update_document(
+        db: Session, 
+        document: models.Documents, 
+        new_file_path: str
+    ) -> models.Documents:
     ext = os.path.splitext(new_file_path)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         raise ValueError(
@@ -53,25 +55,36 @@ def update_document(db: Session, document: models.Documents, new_file_path: str)
     db.commit()
     db.refresh(document)
 
-    if old_file_path and os.path.exists(old_file_path):
-        os.remove(old_file_path)
-
+    if old_file_path:
+        storage_service.delete_file(old_file_path)
+        
     return document
 
 #-----------Get Document List----------------#
-def list_documents(db: Session, project_id: int) -> list[models.Documents]:
+def list_documents(
+        db: Session, 
+        project_id: int
+    ) -> list[models.Documents]:
     return db.query(models.Documents).filter(models.Documents.project_id == project_id).all()
 
 
 #-----------Delete Document----------------#
-def delete_document(db: Session, document: models.Documents, storage=storage_service) -> None:
+def delete_document(
+        db: Session, 
+        document: models.Documents, 
+        storage=storage_service
+    ) -> None:
     storage.delete_file(document.file_path)
     db.delete(document)
     db.commit()
 
 
 #-----------Get file size limit----------------#
-def validate_project_size_limit(db: Session, project_id: int, incoming_file_size:int) -> None:
+def validate_project_size_limit(
+        db: Session, 
+        project_id: int, 
+        incoming_file_size:int
+    ) -> None:
     existing_documents = list_documents(db, project_id)
     existing_keys = [doc.file_path for doc in existing_documents]  #list for the keys
 

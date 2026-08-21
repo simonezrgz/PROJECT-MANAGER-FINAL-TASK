@@ -1,12 +1,11 @@
-import boto3
-import os
-import uuid 
 import json
+import os
+import uuid
 
-from fastapi import UploadFile  
+import boto3
+from fastapi import UploadFile
+
 from app.config import settings
-
-
 
 ALLOWED_EXTENSIONS = [".pdf", ".docx"]
 BUCKET_NAME = settings.S3_BUCKET_NAME
@@ -39,7 +38,9 @@ s3_client = boto3.client(
 def save_upload_file(file: UploadFile) -> str:
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
-        raise ValueError(f"Invalid file type. Allowed types: {', '.join(sorted(ALLOWED_EXTENSIONS))}")
+        raise ValueError(
+            f"Invalid file type. Allowed types: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
+            )
 
     unique_filename = f"{uuid.uuid4()}{ext}"
 
