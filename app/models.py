@@ -14,8 +14,12 @@ class Users(Base):
     permissions = Column(String(50), nullable=False, default="user")
 
     #relationships
-    owned_projects = relationship("Projects", back_populates="owner", cascade="all, delete-orphan")
-    shared_projects = relationship("ProjectAccess", back_populates="user", cascade="all, delete-orphan")
+    owned_projects = relationship(
+        "Projects", back_populates="owner", cascade="all, delete-orphan"
+        )
+    shared_projects = relationship(
+        "ProjectAccess", back_populates="user", cascade="all, delete-orphan"
+        )
 
 
 class Projects(Base):
@@ -27,9 +31,15 @@ class Projects(Base):
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     #relationships
-    owner = relationship("Users", back_populates="owned_projects")
-    documents = relationship("Documents", back_populates="project", cascade="all, delete-orphan")
-    access_list = relationship("ProjectAccess", back_populates="project", cascade="all, delete-orphan")
+    owner = relationship(
+        "Users", back_populates="owned_projects"
+        )
+    documents = relationship(
+        "Documents", back_populates="project", cascade="all, delete-orphan"
+        )
+    access_list = relationship(
+        "ProjectAccess", back_populates="project", cascade="all, delete-orphan"
+        )
 
 
 class Documents(Base):

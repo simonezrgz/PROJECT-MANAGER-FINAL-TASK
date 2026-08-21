@@ -10,7 +10,11 @@ router = APIRouter(tags=["Documents"])
 
 
 #-----------Create Document----------------#
-@router.post("/project/{project_id}/documents", response_model=schemas.DocumentBase, status_code=status.HTTP_201_CREATED)
+@router.post(
+        "/project/{project_id}/documents", 
+        response_model=schemas.DocumentBase, 
+        status_code=status.HTTP_201_CREATED
+        )
 def create_document(
     project_id: int,
     file: UploadFile = File(...),
@@ -27,7 +31,10 @@ def create_document(
         raise HTTPException(status_code=400, detail=str(e))
     
 #-----------Update Document----------------#
-@router.put("/document/{document_id}", response_model=schemas.DocumentBase)
+@router.put(
+        "/document/{document_id}",
+        response_model=schemas.DocumentBase
+        )
 def update_document(
     document_id: int,
     new_file: UploadFile = File(...),
@@ -46,7 +53,10 @@ def update_document(
 
 
 #-----------Get Document List----------------#
-@router.get("/project/{project_id}/documents", response_model=list[schemas.DocumentBase])
+@router.get(
+        "/project/{project_id}/documents", 
+        response_model=list[schemas.DocumentBase]
+        )
 def list_documents(
     project_id: int,
     access = Depends(check_project_access),
@@ -66,7 +76,10 @@ def download_document(
 
 
 #-----------Delete Document----------------#
-@router.delete("/document/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+        "/document/{document_id}", 
+        status_code=status.HTTP_204_NO_CONTENT
+        )
 def delete_document(
     document_id: int,
     access = Depends(check_document_owner),

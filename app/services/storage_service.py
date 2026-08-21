@@ -38,7 +38,9 @@ s3_client = boto3.client(
 def save_upload_file(file: UploadFile) -> str:
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
-        raise ValueError(f"Invalid file type. Allowed types: {', '.join(sorted(ALLOWED_EXTENSIONS))}")
+        raise ValueError(
+            f"Invalid file type. Allowed types: {', '.join(sorted(ALLOWED_EXTENSIONS))}"
+            )
 
     unique_filename = f"{uuid.uuid4()}{ext}"
 
